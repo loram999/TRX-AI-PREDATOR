@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>AI Prediction Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary: #6366f1;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --radius-lg: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-primary);
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        /* Timer Card */
+        .timer-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timer-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .timer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .period-box, .timer-box {
+            text-align: center;
+        }
+
+        .period-label, .timer-label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .period-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .timer-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            font-family: monospace;
+        }
+
+        /* Prediction Card */
+        .prediction-card {
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .prediction-display {
+            text-align: center;
+        }
+
+        .prediction-value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 1rem 0;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+        }
+
+        .prediction-value.big {
+            color: var(--primary);
+        }
+
+        .prediction-value.small {
+            color: var(--secondary);
+        }
+
+        .prediction-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            background: var(--bg-primary);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .status-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--warning);
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.connected {
+            background: var(--success);
+            animation: none;
+        }
+
+        .status-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .refresh-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .refresh-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        /* 3-Server Grid */
+        .servers-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header {
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* 3-Column Grid Layout */
+        .servers-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .servers-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+        }
+
+        .server-card {
+            background: var(--bg-primary);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--border);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .server-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-light);
+        }
+
+        .server-card.selected {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(37, 99, 235, 0.02));
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15);
+        }
+
+        .server-card.selected::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .server-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .server-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .server-status {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .server-name {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .server-description {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .server-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric-value {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--primary);
+        }
+
+        .metric-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-primary);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* History */
+        .history-section {
+            background: var(--bg-primary);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .history-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .history-items {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+
+        .history-item {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .history-item.big {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+
+        .history-item.small {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--secondary);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.75rem;
+            }
+            
+            .prediction-value {
+                font-size: 3rem;
+            }
+            
+            .server-card {
+                padding: 1rem;
+            }
+            
+            .server-metrics .metric-value {
+                font-size: 0.9rem;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <div style="color: var(--text-secondary); font-weight: 500;">Initializing AI System...</div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="logo-text">AI Predictor</div>
+            </div>
+            <div class="status-info">
+                <div id="connection-status" class="status-indicator"></div>
+                <div id="status-text" class="status-text">Connected</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Timer Card -->
+        <div class="timer-card">
+            <div class="timer-content">
+                <div class="period-box">
+                    <div class="period-label">CURRENT ROUND</div>
+                    <div class="period-value" id="period-value">--</div>
+                </div>
+                <div class="timer-box">
+                    <div class="timer-label">NEXT IN</div>
+                    <div class="timer-value" id="timer-display">00:60</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prediction Card -->
+        <div class="prediction-card">
+            <div class="prediction-display">
+                <div class="prediction-label">AI PREDICTION</div>
+                <div class="prediction-value big" id="prediction-result">--</div>
+                <div class="prediction-label" id="prediction-confidence">Analyzing Patterns...</div>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-content">
+                <div class="status-info">
+                    <div id="connection-dot" class="status-indicator"></div>
+                    <div id="status-message" class="status-text">System Initializing...</div>
+                </div>
+                <button class="refresh-btn" onclick="refreshPrediction()">
+                    <i class="fas fa-sync-alt"></i>
+                    Refresh
+                </button>
+            </div>
+        </div>
+
+        <!-- 3-Server Grid -->
+        <div class="servers-section">
+            <div class="section-header">
+                <div class="section-title">AI Processors</div>
+                <div class="section-subtitle">Select one AI processor for predictions</div>
+            </div>
+            
+            <!-- 3-Column Grid -->
+            <div class="servers-grid" id="servers-grid">
+                <!-- Server 1 -->
+                <div class="server-card" onclick="selectServer(0)" id="server-0">
+                    <div class="server-header">
+                        <div class="server-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="server-status">ACTIVE</div>
+                    </div>
+                    <div class="server-name">Quantum Core</div>
+                    <div class="server-description">Quantum algorithms for max precision</div>
+                    <div class="server-metrics">
+                        <div class="metric">
+                            <div class="metric-value">96.8%</div>
+                            <div class="metric-label">PRECISION</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">0.12s</div>
+                            <div class="metric-label">SPEED</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">HIGH</div>
+                            <div class="metric-label">POWER</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Server 2 -->
+                <div class="server-card" onclick="selectServer(1)" id="server-1">
+                    <div class="server-header">
+                        <div class="server-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="server-status">ACTIVE</div>
+                    </div>
+                    <div class="server-name">Neural Nexus</div>
+                    <div class="server-description">Deep neural pattern recognition</div>
+                    <div class="server-metrics">
+                        <div class="metric">
+                            <div class="metric-value">94.2%</div>
+                            <div class="metric-label">PRECISION</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">0.18s</div>
+                            <div class="metric-label">SPEED</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">HIGH</div>
+                            <div class="metric-label">POWER</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Server 3 -->
+                <div class="server-card" onclick="selectServer(2)" id="server-2">
+                    <div class="server-header">
+                        <div class="server-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="server-status">ACTIVE</div>
+                    </div>
+                    <div class="server-name">Pattern Prime</div>
+                    <div class="server-description">Statistical pattern analysis</div>
+                    <div class="server-metrics">
+                        <div class="metric">
+                            <div class="metric-value">92.5%</div>
+                            <div class="metric-label">PRECISION</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">0.25s</div>
+                            <div class="metric-label">SPEED</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">HIGH</div>
+                            <div class="metric-label">POWER</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="streak-count">0</div>
+                <div class="stat-label">CURRENT STREAK</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="success-rate">0%</div>
+                <div class="stat-label">SUCCESS RATE</div>
+            </div>
+        </div>
+
+        <!-- History -->
+        <div class="history-section">
+            <div class="history-title">Recent Predictions</div>
+            <div class="history-items" id="history-items">
+                <!-- History items will be inserted here -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // State Management
+        let state = {
+            currentPeriod: '',
+            selectedServer: 0,
+            currentStreak: 0,
+            successRate: '0%',
+            history: [],
+            apiConnected: false,
+            lastPrediction: null,
+            currentTimer: 60,
+            timerInterval: null
+        };
+
+        // Server Data
+        const servers = [
+            {
+                id: 0,
+                name: "Quantum Core",
+                description: "Quantum algorithms for maximum precision",
+                accuracy: "96.8%",
+                speed: "0.12s",
+                power: "High"
+            },
+            {
+                id: 1,
+                name: "Neural Nexus",
+                description: "Deep neural networks with pattern recognition",
+                accuracy: "94.2%",
+                speed: "0.18s",
+                power: "Medium"
+            },
+            {
+                id: 2,
+                name: "Pattern Prime",
+                description: "Advanced statistical pattern analysis",
+                accuracy: "92.5%",
+                speed: "0.25s",
+                power: "HIGH"
+            }
+        ];
+
+        // DOM Elements
+        const elements = {
+            loading: document.getElementById('loading'),
+            periodValue: document.getElementById('period-value'),
+            timerDisplay: document.getElementById('timer-display'),
+            predictionResult: document.getElementById('prediction-result'),
+            predictionConfidence: document.getElementById('prediction-confidence'),
+            connectionDot: document.getElementById('connection-dot'),
+            statusMessage: document.getElementById('status-message'),
+            streakCount: document.getElementById('streak-count'),
+            successRate: document.getElementById('success-rate'),
+            historyItems: document.getElementById('history-items'),
+            serverCards: [
+                document.getElementById('server-0'),
+                document.getElementById('server-1'),
+                document.getElementById('server-2')
+            ]
+        };
+
+        // Initialize Application
+        function initialize() {
+            showLoading(true);
+            
+            // Initialize UI
+            updatePeriod();
+            renderHistory();
+            updateStats();
+            
+            // Start timer
+            startTimer();
+            
+            // Connect to API
+            connectToAPI();
+            
+            // Auto-select first server
+            setTimeout(() => selectServer(0), 500);
+            
+            showLoading(false);
+        }
+
+        // Select Server
+        function selectServer(index) {
+            state.selectedServer = index;
+            
+            // Update server card styles
+            elements.serverCards.forEach((card, i) => {
+                if (i === index) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+            
+            // Update prediction with selected server's data
+            updatePredictionForServer(index);
+            
+            // Show notification
+            showNotification(`${servers[index].name} activated`, 'success');
+        }
+
+        // Update Prediction for Selected Server
+        function updatePredictionForServer(serverIndex) {
+            const server = servers[serverIndex];
+            const accuracy = parseFloat(server.accuracy);
+            
+            // Simulate prediction based on server accuracy
+            const randomFactor = Math.random() * 10;
+            const prediction = (accuracy + randomFactor) > 50 ? 'BIG' : 'SMALL';
+            
+            updatePrediction(prediction);
+            
+            // Calculate confidence based on server accuracy
+            const confidence = Math.min(accuracy + Math.random() * 3, 99).toFixed(1);
+            elements.predictionConfidence.textContent = `${confidence}% Confidence • ${server.name}`;
+            
+            // Update history
+            updateHistory(prediction);
+        }
+
+        // Update Prediction
+        function updatePrediction(prediction) {
+            elements.predictionResult.textContent = prediction;
+            elements.predictionResult.className = `prediction-value ${prediction.toLowerCase()}`;
+            state.lastPrediction = prediction;
+            
+            // Animation
+            elements.predictionResult.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                elements.predictionResult.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        // Update History
+        function updateHistory(prediction) {
+            state.history.unshift(prediction);
+            if (state.history.length > 5) {
+                state.history = state.history.slice(0, 5);
+            }
+            renderHistory();
+        }
+
+        // Render History
+        function renderHistory() {
+            elements.historyItems.innerHTML = '';
+            
+            const displayHistory = state.history.length > 0 ? state.history : ['BIG', 'SMALL', 'BIG', 'SMALL', 'BIG'];
+            
+            displayHistory.forEach((item, index) => {
+                const historyItem = document.createElement('div');
+                historyItem.className = `history-item ${item.toLowerCase()}`;
+                historyItem.textContent = item.charAt(0);
+                historyItem.title = `${item} • Round ${index + 1}`;
+                elements.historyItems.appendChild(historyItem);
+            });
+        }
+
+        // Update Stats
+        function updateStats() {
+            // Random streak between 1-15
+            state.currentStreak = Math.floor(Math.random() * 15) + 1;
+            // Random success rate between 80-99%
+            state.successRate = `${Math.floor(80 + Math.random() * 20)}%`;
+            
+            elements.streakCount.textContent = state.currentStreak;
+            elements.successRate.textContent = state.successRate;
+        }
+
+        // Timer Functions
+        function startTimer() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            
+            updateTimerFromUTC();
+            
+            state.timerInterval = setInterval(() => {
+                state.currentTimer--;
+                
+                if (state.currentTimer <= 0) {
+                    state.currentTimer = 60;
+                    updatePeriod();
+                    
+                    // Auto generate new prediction
+                    updatePredictionForServer(state.selectedServer);
+                    
+                    // Randomly increment streak
+                    if (Math.random() > 0.3) {
+                        state.currentStreak++;
+                        updateStats();
+                    }
+                }
+                
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerFromUTC() {
+            const now = new Date();
+            const seconds = now.getUTCSeconds();
+            state.currentTimer = 60 - seconds;
+            if (state.currentTimer <= 0) state.currentTimer = 60;
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            elements.timerDisplay.textContent = `00:${state.currentTimer.toString().padStart(2, '0')}`;
+        }
+
+        function updatePeriod() {
+            const now = new Date();
+            const y = now.getUTCFullYear();
+            const m = String(now.getUTCMonth() + 1).padStart(2, '0');
+            const d = String(now.getUTCDate()).padStart(2, '0');
+            const totalMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
+            
+            state.currentPeriod = `${y}${m}${d}${String(10000 + totalMinutes).slice(1)}`;
+            elements.periodValue.textContent = state.currentPeriod;
+        }
+
+        // API Connection
+        function connectToAPI() {
+            updateConnectionStatus('connecting', 'Connecting to AI Network...');
+            
+            // Simulate API connection with timeout
+            setTimeout(() => {
+                if (Math.random() > 0.2) { // 80% success rate
+                    state.apiConnected = true;
+                    updateConnectionStatus('connected', 'Live Connection • NETWORK BOOST');
+                    
+                    // Fetch initial data
+                    setTimeout(() => {
+                        updatePredictionForServer(state.selectedServer);
+                    }, 1000);
+                } else {
+                    updateConnectionStatus('error', 'Offline Mode • Using AI Simulation');
+                    // Use offline simulation
+                    updatePredictionForServer(state.selectedServer);
+                }
+            }, 2000);
+        }
+
+        // Connection Status
+        function updateConnectionStatus(status, message) {
+            elements.connectionDot.className = 'status-indicator';
+            elements.statusMessage.textContent = message;
+            
+            switch(status) {
+                case 'connecting':
+                    elements.connectionDot.classList.add('status-indicator');
+                    break;
+                case 'connected':
+                    elements.connectionDot.classList.add('connected');
+                    break;
+                case 'error':
+                    elements.connectionDot.style.background = 'var(--warning)';
+                    break;
+            }
+        }
+
+        // Refresh Prediction
+        function refreshPrediction() {
+            updatePredictionForServer(state.selectedServer);
+            
+            // Button animation
+            const btn = event.target.closest('.refresh-btn');
+            btn.style.transform = 'rotate(180deg)';
+            setTimeout(() => {
+                btn.style.transform = 'rotate(0deg)';
+            }, 300);
+            
+            showNotification('Prediction refreshed', 'info');
+        }
+
+        // Loading Overlay
+        function showLoading(show) {
+            elements.loading.style.display = show ? 'flex' : 'none';
+        }
+
+        // Notification System
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%) translateY(100px);
+                background: ${type === 'success' ? 'var(--success)' : 
+                           type === 'warning' ? 'var(--warning)' : 'var(--primary)'};
+                color: white;
+                padding: 12px 24px;
+                border-radius: 10px;
+                font-weight: 500;
+                font-size: 0.9rem;
+                box-shadow: var(--shadow-lg);
+                z-index: 1000;
+                transition: transform 0.3s;
+                white-space: nowrap;
+            `;
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(-50%) translateY(0)';
+            }, 10);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(-50%) translateY(100px)';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', initialize);
+        
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            if (state.apiConnected && state.selectedServer !== null) {
+                updatePredictionForServer(state.selectedServer);
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
